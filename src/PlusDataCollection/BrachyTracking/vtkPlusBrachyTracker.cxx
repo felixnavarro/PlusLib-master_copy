@@ -219,6 +219,12 @@ PlusStatus vtkPlusBrachyTracker::InternalUpdate()
   probePosition->SetElement(ROW_TEMPLATE_POSITION, 3, dTemplatePosition);
 
   // Update encoder values tool
+  LOG_TRACE("Calling ToolTimeStampedUpdate for RAW_ENCODER using: "
+			<< "(Tool ID) " << GetBrachyToolSourceId(RAW_ENCODER_VALUES).c_str() <<", "
+			<< "(ProbeHomeToProbe) " << tProbeHomeToProbe->GetMatrix() <<", "
+			<< "(status) " << status <<", "
+			<< "(frameNum) " << frameNum <<", "
+			<< "(unfilteredTimestamp) " << unfilteredTimestamp);
   if (this->ToolTimeStampedUpdate(this->GetBrachyToolSourceId(RAW_ENCODER_VALUES).c_str(), probePosition, status, frameNum, unfilteredTimestamp) != PLUS_SUCCESS)
   {
     LOG_ERROR("Failed to update tool: " << this->GetBrachyToolSourceId(RAW_ENCODER_VALUES));
@@ -227,7 +233,7 @@ PlusStatus vtkPlusBrachyTracker::InternalUpdate()
 
   if (!this->CompensationEnabled)
   {
-
+	LOG_TRACE("this->CompensationEnabled=TRUE");
     // Update template transform tool
     vtkSmartPointer<vtkTransform> tTemplateHomeToTemplate = vtkSmartPointer<vtkTransform>::New();
     tTemplateHomeToTemplate->Translate(0, 0, dTemplatePosition);
@@ -248,7 +254,7 @@ PlusStatus vtkPlusBrachyTracker::InternalUpdate()
     }
     return PLUS_SUCCESS;
   }
-
+  LOG_TRACE("If this->CompensationEnabled=TRUE was not printed then: FALSE");
   // Save template home to template transform
   vtkSmartPointer<vtkTransform> tTemplateHomeToTemplate = vtkSmartPointer<vtkTransform>::New();
   double templateTranslationAxisVector[3];
@@ -256,6 +262,12 @@ PlusStatus vtkPlusBrachyTracker::InternalUpdate()
   vtkMath::MultiplyScalar(templateTranslationAxisVector, dTemplatePosition);
   tTemplateHomeToTemplate->Translate(templateTranslationAxisVector);
   // send the transformation matrix and status to the tool
+  LOG_TRACE("Calling ToolTimeStampedUpdate for TEMPLATEHOME_TO_TEMPLATE_TRANSFORM using: "
+			<< "(Tool ID) " << GetBrachyToolSourceId(TEMPLATEHOME_TO_TEMPLATE_TRANSFORM).c_str() <<", "
+			<< "(TemplateHome2Template) " << tTemplateHomeToTemplate->GetMatrix() <<", "
+			<< "(status) " << status <<", "
+			<< "(frameNum) " << frameNum <<", "
+			<< "(unfilteredTimestamp) " << unfilteredTimestamp);
   if (this->ToolTimeStampedUpdate(this->GetBrachyToolSourceId(TEMPLATEHOME_TO_TEMPLATE_TRANSFORM).c_str(), tTemplateHomeToTemplate->GetMatrix(), status, frameNum, unfilteredTimestamp) != PLUS_SUCCESS)
   {
     LOG_ERROR("Failed to update tool: " << this->GetBrachyToolSourceId(TEMPLATEHOME_TO_TEMPLATE_TRANSFORM));
@@ -272,7 +284,7 @@ PlusStatus vtkPlusBrachyTracker::InternalUpdate()
 
   // Translate the probe to the compensated rotation axis before the rotation
   double probeRotationVector[3];
-  this->GetProbeRotationAxisOrientation(probeRotationVector);
+  this->GetProbeRotationAxisOrientation(probeRotationVector); //This is not assigned to anything ¿?
   vtkMath::MultiplyScalar(probeRotationVector, dProbePosition);
   tProbeHomeToProbe->Translate(probeRotationVector);
   const double compensatedProbeRotation = this->ProbeRotationEncoderScale * dProbeRotation;
@@ -280,6 +292,12 @@ PlusStatus vtkPlusBrachyTracker::InternalUpdate()
   // Translate back the probe to the original position
   tProbeHomeToProbe->Translate(-probeRotationVector[0], -probeRotationVector[1], -probeRotationVector[2]);
   // send the transformation matrix and status to the tool
+  LOG_TRACE("Calling ToolTimeStampedUpdate fro PROBEHOME_TO_PROBE_TRANSFORM using: "
+			<< "(Tool ID) " << GetBrachyToolSourceId(PROBEHOME_TO_PROBE_TRANSFORM).c_str() <<", "
+			<< "(ProbeHomeToProbe) " << tProbeHomeToProbe->GetMatrix() <<", "
+			<< "(status) " << status <<", "
+			<< "(frameNum) " << frameNum <<", "
+			<< "(unfilteredTimestamp) " << unfilteredTimestamp);
   if (this->ToolTimeStampedUpdate(this->GetBrachyToolSourceId(PROBEHOME_TO_PROBE_TRANSFORM).c_str(), tProbeHomeToProbe->GetMatrix(), status, frameNum, unfilteredTimestamp) != PLUS_SUCCESS)
   {
     LOG_ERROR("Failed to update tool: " << this->GetBrachyToolSourceId(PROBEHOME_TO_PROBE_TRANSFORM));
@@ -359,6 +377,7 @@ PlusStatus vtkPlusBrachyTracker::ReadConfiguration(vtkXMLDataElement* rootConfig
     }
     else if (STRCASECMP(PlusBrachyStepper::GetBrachyStepperTypeInString(PlusBrachyStepper::CIVCO_STEPPER).c_str(), brachyStepperType) == 0)
     {
+	  LOG_TRACE("Setting type CIVCO_STEPPER");
       this->Device = new PlusCivcoBrachyStepper(this->GetSerialPort(), this->GetBaudRate());
       this->Device->SetBrachyStepperType(PlusBrachyStepper::CIVCO_STEPPER);
       this->BrachyStepperType = PlusBrachyStepper::CIVCO_STEPPER;
@@ -566,19 +585,22 @@ PlusStatus vtkPlusBrachyTracker::GetTrackedFrame(double timestamp, igsioTrackedF
     return PLUS_FAIL;
   }
 
-  // PROBE_POSITION
+  // PROBE_POSITION 
   std::ostringstream strProbePos;
   strProbePos << probePos;
+  LOG_TRACE("Setting ProbePosition " << strProbePos.str());
   aTrackedFrame->SetFrameField("ProbePosition", strProbePos.str());
 
   // PROBE_ROTATION
   std::ostringstream strProbeRot;
   strProbeRot << probeRot;
+  LOG_TRACE("Setting ProbeRotation " << strProbeRot.str());
   aTrackedFrame->SetFrameField("ProbeRotation", strProbeRot.str());
 
   // TEMPLATE_POSITION
   std::ostringstream strTemplatePos;
   strTemplatePos << templatePos;
+  LOG_TRACE("Setting TemplatePosition " << strTemplatePos.str());
   aTrackedFrame->SetFrameField("TemplatePosition", strTemplatePos.str());
 
   return PLUS_SUCCESS;
