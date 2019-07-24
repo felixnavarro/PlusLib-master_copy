@@ -221,7 +221,7 @@ PlusStatus vtkPlusBrachyTracker::InternalUpdate()
   // Update encoder values tool
   LOG_TRACE("Calling ToolTimeStampedUpdate for RAW_ENCODER using: "
 			<< "(Tool ID) " << GetBrachyToolSourceId(RAW_ENCODER_VALUES).c_str() <<", "
-			<< "(ProbeHomeToProbe) " << tProbeHomeToProbe->GetMatrix() <<", "
+			<< "(ProbeHomeToProbe) " << probePosition->GetData() <<", "
 			<< "(status) " << status <<", "
 			<< "(frameNum) " << frameNum <<", "
 			<< "(unfilteredTimestamp) " << unfilteredTimestamp);
