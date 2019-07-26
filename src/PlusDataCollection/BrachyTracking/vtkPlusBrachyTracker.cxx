@@ -254,7 +254,7 @@ PlusStatus vtkPlusBrachyTracker::InternalUpdate()
     }
     return PLUS_SUCCESS;
   }
-  LOG_TRACE("If this->CompensationEnabled=TRUE was not printed then: FALSE");
+  //LOG_TRACE("If this->CompensationEnabled=TRUE was not printed then: FALSE");
   // Save template home to template transform
   vtkSmartPointer<vtkTransform> tTemplateHomeToTemplate = vtkSmartPointer<vtkTransform>::New();
   double templateTranslationAxisVector[3];
