@@ -435,13 +435,12 @@ PlusStatus vtkPlusOpenIGTLinkServer::SendLatestFramesToClients(vtkPlusOpenIGTLin
         || (self.BroadcastChannel->ToolCount() > 0 && !self.BroadcastChannel->GetTrackingDataAvailable())
         || (self.BroadcastChannel->FieldCount() > 0 && !self.BroadcastChannel->GetFieldDataAvailable()))
     {
-	  LOG_DYNAMIC(	"self.BroadcastChannel->HasVideoSource()			:" << self.BroadcastChannel->HasVideoSource() << endl <<
+	  LOG_TRACE(	"self.BroadcastChannel->HasVideoSource()			:" << self.BroadcastChannel->HasVideoSource() << endl <<
 					"self.BroadcastChannel->GetVideoDataAvailable()		:" << self.BroadcastChannel->GetVideoDataAvailable() << endl <<
 					"self.BroadcastChannel->ToolCount()					:" << self.BroadcastChannel->ToolCount()() << endl <<
 					"self.BroadcastChannel->GetTrackingDataAvailable()	:" << self.BroadcastChannel->GetTrackingDataAvailable() << endl <<
 					"self.BroadcastChannel->FieldCount()				:" << self.BroadcastChannel->FieldCount() << endl <<
-					"self.BroadcastChannel->GetFieldDataAvailable()		:" << self.BroadcastChannel->GetFieldDataAvailable() << endl, 
-	  self.GracePeriodLogLevel);
+					"self.BroadcastChannel->GetFieldDataAvailable()		:" << self.BroadcastChannel->GetFieldDataAvailable() << ".");
       if (self.LogWarningOnNoDataAvailable)
       {
         LOG_DYNAMIC("No data is broadcasted, as no data is available yet.", self.GracePeriodLogLevel);
