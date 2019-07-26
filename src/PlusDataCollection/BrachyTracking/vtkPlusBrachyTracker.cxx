@@ -202,11 +202,11 @@ PlusStatus vtkPlusBrachyTracker::InternalUpdate()
     // Unable to get tracking information from tracker
     status = TOOL_REQ_TIMEOUT;
   }
-  LOG_TRACE("Encoder values: "
+  /*LOG_TRACE("Encoder values: "
     << "(Probe position) " << dProbePosition << ", "
     << "(Probe rotation) " << dProbeRotation << ", "
     << "(Template position) " << dTemplatePosition << ", "
-    << "(Frame number) " << frameNum);
+    << "(Frame number) " << frameNum);*/
 
   const double unfilteredTimestamp = vtkIGSIOAccurateTimer::GetSystemTime();
 
@@ -219,12 +219,12 @@ PlusStatus vtkPlusBrachyTracker::InternalUpdate()
   probePosition->SetElement(ROW_TEMPLATE_POSITION, 3, dTemplatePosition);
 
   // Update encoder values tool
-  LOG_TRACE("Calling ToolTimeStampedUpdate for RAW_ENCODER using: "
+  /*LOG_TRACE("Calling ToolTimeStampedUpdate for RAW_ENCODER using: "
 			<< "(Tool ID) " << GetBrachyToolSourceId(RAW_ENCODER_VALUES).c_str() <<", "
 			<< "(ProbeHomeToProbe) " << probePosition->GetData() <<", "
 			<< "(status) " << status <<", "
 			<< "(frameNum) " << frameNum <<", "
-			<< "(unfilteredTimestamp) " << unfilteredTimestamp);
+			<< "(unfilteredTimestamp) " << unfilteredTimestamp);*/
   if (this->ToolTimeStampedUpdate(this->GetBrachyToolSourceId(RAW_ENCODER_VALUES).c_str(), probePosition, status, frameNum, unfilteredTimestamp) != PLUS_SUCCESS)
   {
     LOG_ERROR("Failed to update tool: " << this->GetBrachyToolSourceId(RAW_ENCODER_VALUES));
@@ -262,16 +262,16 @@ PlusStatus vtkPlusBrachyTracker::InternalUpdate()
   vtkMath::MultiplyScalar(templateTranslationAxisVector, dTemplatePosition);
   tTemplateHomeToTemplate->Translate(templateTranslationAxisVector);
   // send the transformation matrix and status to the tool
-  LOG_TRACE("Calling ToolTimeStampedUpdate for TEMPLATEHOME_TO_TEMPLATE_TRANSFORM using: "
+  /*LOG_TRACE("Calling ToolTimeStampedUpdate for TEMPLATEHOME_TO_TEMPLATE_TRANSFORM using: "
 			<< "(Tool ID) " << GetBrachyToolSourceId(TEMPLATEHOME_TO_TEMPLATE_TRANSFORM).c_str() <<", "
 			<< "(TemplateHome2Template) " << tTemplateHomeToTemplate->GetMatrix() <<", "
 			<< "(status) " << status <<", "
 			<< "(frameNum) " << frameNum <<", "
-			<< "(unfilteredTimestamp) " << unfilteredTimestamp);
-  LOG_TRACE("The matrix TemplateHome2Template is: " << endl 
+			<< "(unfilteredTimestamp) " << unfilteredTimestamp);*/
+  /*LOG_TRACE("The matrix TemplateHome2Template is: " << endl 
             << tTemplateHomeToTemplate->GetMatrix()->GetElement(1,1) << " , " << tTemplateHomeToTemplate->GetMatrix()->GetElement(1,2) << " , " << tTemplateHomeToTemplate->GetMatrix()->GetElement(1,3) << endl
             << tTemplateHomeToTemplate->GetMatrix()->GetElement(2,1) << " , " << tTemplateHomeToTemplate->GetMatrix()->GetElement(2,2) << " , " << tTemplateHomeToTemplate->GetMatrix()->GetElement(2,3) << endl
-            << tTemplateHomeToTemplate->GetMatrix()->GetElement(3,1) << " , " << tTemplateHomeToTemplate->GetMatrix()->GetElement(3,2) << " , " << tTemplateHomeToTemplate->GetMatrix()->GetElement(3,3) << endl);
+            << tTemplateHomeToTemplate->GetMatrix()->GetElement(3,1) << " , " << tTemplateHomeToTemplate->GetMatrix()->GetElement(3,2) << " , " << tTemplateHomeToTemplate->GetMatrix()->GetElement(3,3) << endl);*/
   if (this->ToolTimeStampedUpdate(this->GetBrachyToolSourceId(TEMPLATEHOME_TO_TEMPLATE_TRANSFORM).c_str(), tTemplateHomeToTemplate->GetMatrix(), status, frameNum, unfilteredTimestamp) != PLUS_SUCCESS)
   {
     LOG_ERROR("Failed to update tool: " << this->GetBrachyToolSourceId(TEMPLATEHOME_TO_TEMPLATE_TRANSFORM));
@@ -296,16 +296,16 @@ PlusStatus vtkPlusBrachyTracker::InternalUpdate()
   // Translate back the probe to the original position
   tProbeHomeToProbe->Translate(-probeRotationVector[0], -probeRotationVector[1], -probeRotationVector[2]);
   // send the transformation matrix and status to the tool
-  LOG_TRACE("Calling ToolTimeStampedUpdate fro PROBEHOME_TO_PROBE_TRANSFORM using: "
+  /*LOG_TRACE("Calling ToolTimeStampedUpdate fro PROBEHOME_TO_PROBE_TRANSFORM using: "
 			<< "(Tool ID) " << GetBrachyToolSourceId(PROBEHOME_TO_PROBE_TRANSFORM).c_str() <<", "
 			<< "(ProbeHomeToProbe) " << tProbeHomeToProbe->GetMatrix() <<", "
 			<< "(status) " << status <<", "
 			<< "(frameNum) " << frameNum <<", "
-			<< "(unfilteredTimestamp) " << unfilteredTimestamp);
-  LOG_TRACE("The matrix ProbeHomeToProbe is: " << endl 
+			<< "(unfilteredTimestamp) " << unfilteredTimestamp);*/
+  /*LOG_TRACE("The matrix ProbeHomeToProbe is: " << endl 
             << tProbeHomeToProbe->GetMatrix()->GetElement(1,1) << " , " << tProbeHomeToProbe->GetMatrix()->GetElement(1,2) << " , " << tProbeHomeToProbe->GetMatrix()->GetElement(1,3) << endl
             << tProbeHomeToProbe->GetMatrix()->GetElement(2,1) << " , " << tProbeHomeToProbe->GetMatrix()->GetElement(2,2) << " , " << tProbeHomeToProbe->GetMatrix()->GetElement(2,3) << endl
-            << tProbeHomeToProbe->GetMatrix()->GetElement(3,1) << " , " << tProbeHomeToProbe->GetMatrix()->GetElement(3,2) << " , " << tProbeHomeToProbe->GetMatrix()->GetElement(3,3) << endl);
+            << tProbeHomeToProbe->GetMatrix()->GetElement(3,1) << " , " << tProbeHomeToProbe->GetMatrix()->GetElement(3,2) << " , " << tProbeHomeToProbe->GetMatrix()->GetElement(3,3) << endl);*/
   if (this->ToolTimeStampedUpdate(this->GetBrachyToolSourceId(PROBEHOME_TO_PROBE_TRANSFORM).c_str(), tProbeHomeToProbe->GetMatrix(), status, frameNum, unfilteredTimestamp) != PLUS_SUCCESS)
   {
     LOG_ERROR("Failed to update tool: " << this->GetBrachyToolSourceId(PROBEHOME_TO_PROBE_TRANSFORM));
